@@ -1,0 +1,25 @@
+{
+  "name": "choose-one",
+  "version": "1.0.0",
+  "description": "Choose One",
+  "author": "kidow",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.3.6",
+    "@nuxtjs/pwa": "^3.0.0-0",
+    "@nuxtjs/style-resources": "^1.0.0",
+    "element-ui": "^2.4.11",
+    "nuxt": "^2.0.0",
+    "open-color": "^1.7.0"
+  },
+  "devDependencies": {
+    "node-sass": "^4.12.0",
+    "sass-loader": "^8.0.0"
+  }
+}
