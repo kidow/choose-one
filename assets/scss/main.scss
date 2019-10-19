@@ -1,0 +1,64 @@
+@import '~include-media/dist/include-media';
+
+$breakpoints: (
+  phone: 420px,
+  tablet: 768px,
+  desktop: 1024px,
+  wide: 1280px,
+  grand: 1350px
+);
+
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+ul {
+  list-style: none;
+}
+
+input,
+textarea,
+i,
+button {
+  outline: none;
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+textarea {
+  border-width: 1px;
+  resize: none;
+}
+
+.block {
+  display: block;
+}
+
+.none {
+  display: none;
+}
+
+.flex {
+  display: flex;
+}

@@ -15,7 +15,13 @@ export default {
         content: process.env.npm_package_description || ''
       }
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    link: [
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css?family=Open+Sans:400,600,700'
+      }
+    ]
   },
 
   loading: { color: '#fff' },
@@ -26,9 +32,17 @@ export default {
 
   buildModules: [],
 
-  modules: ['@nuxtjs/axios', '@nuxtjs/pwa', '@nuxtjs/style-resources'],
+  modules: [
+    '@nuxtjs/axios',
+    '@nuxtjs/pwa',
+    '@nuxtjs/style-resources',
+    'nuxt-device-detect'
+  ],
 
   axios: {},
+  styleResources: {
+    scss: ['node_modules/open-color/open-color.scss', './assets/scss/main.scss']
+  },
 
   build: {
     transpile: [/^element-ui/],
