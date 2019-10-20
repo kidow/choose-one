@@ -11,8 +11,8 @@
         <vue-banner />
         <vue-meta />
         <div class="comments__length">
-          <span class="length">936 comments</span>
-          <el-button>댓글 등록</el-button>
+          <span class="length">{{ comments.length }} comments</span>
+          <span class="button">댓글 등록</span>
         </div>
         <vue-comments :comments="comments" />
       </el-col>
@@ -26,6 +26,7 @@ import VueCard from '~/components/Card'
 import VueBanner from '~/components/Banner'
 import VueMeta from '~/components/Meta'
 import VueComments from '~/components/Comments'
+import { mapGetters } from 'vuex'
 export default {
   components: {
     VueCard,
@@ -38,31 +39,11 @@ export default {
       title: 'TITLE'
     }
   },
-  data: _ => ({
-    comments: [
-      {
-        id: 1,
-        parentId: null,
-        likes: 11,
-        imgUrl:
-          'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-        name: 'Kim',
-        createdAt: new Date(),
-        content:
-          'i can still have a great personality without being funny....i can still be smart, opinionated, and good willed...i don'
-      },
-      {
-        id: 2,
-        parentId: 1,
-        likes: 11,
-        imgUrl: '',
-        name: 'Arnold',
-        createdAt: new Date(),
-        content:
-          "Man... I'm bored just reading your post.. maybe go for the funny part."
-      }
-    ]
-  })
+  computed: {
+    ...mapGetters({
+      comments: 'comment/GET_COMMENTS'
+    })
+  }
 }
 </script>
 
@@ -105,6 +86,10 @@ export default {
   border-bottom: 1px solid $oc-gray-4;
   @include media('<phone') {
     padding: 15px 1rem;
+  }
+  .button {
+    cursor: pointer;
+    color: $oc-gray-7;
   }
 }
 </style>

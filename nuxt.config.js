@@ -20,6 +20,13 @@ export default {
       {
         rel: 'stylesheet',
         href: 'https://fonts.googleapis.com/css?family=Open+Sans:400,600,700'
+      },
+      {
+        rel: 'stylesheet',
+        href: 'https://use.fontawesome.com/releases/v5.8.2/css/all.css',
+        integrity:
+          'sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay',
+        crossorigin: 'anonymous'
       }
     ]
   },
@@ -28,7 +35,7 @@ export default {
 
   css: ['element-ui/lib/theme-chalk/index.css'],
 
-  plugins: ['@/plugins/element-ui'],
+  plugins: ['@/plugins/element-ui', '@/plugins/vue-clipboard2'],
 
   buildModules: [],
 
@@ -37,7 +44,8 @@ export default {
     '@nuxtjs/pwa',
     '@nuxtjs/style-resources',
     'nuxt-device-detect',
-    ['@nuxtjs/moment', { locales: ['ko'], defaultLocales: 'ko' }]
+    ['@nuxtjs/moment', { locales: ['ko'], defaultLocales: 'ko' }],
+    '@nuxtjs/font-awesome'
   ],
 
   axios: {},

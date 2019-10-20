@@ -1,13 +1,18 @@
 <template>
   <header>
     <span>Logo</span>
-    <span @click="$store.commit('SAVE_VISIBLE', true)">새 글 등록</span>
+    <span @click="login">새 글 등록</span>
   </header>
 </template>
 
 <script>
 export default {
-  name: 'VueHeader'
+  name: 'VueHeader',
+  methods: {
+    login() {
+      this.$store.commit('auth/SAVE_VISIBLE', true)
+    }
+  }
 }
 </script>
 

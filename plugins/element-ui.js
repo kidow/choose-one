@@ -10,7 +10,8 @@ export default () => {
           this.$notify({
             type: 'success',
             title: '성공',
-            message
+            message,
+            duration: 3000
           })
         },
         notifyError(message) {
@@ -19,21 +20,24 @@ export default () => {
             title: '실패',
             message:
               message ||
-              '죄송합니다. 서버 오류가 발생했습니다. 나중에 다시 시도해주세요.'
+              '죄송합니다. 서버 오류가 발생했습니다. 나중에 다시 시도해주세요.',
+            duration: 3000
           })
         },
         notifyWarning(message) {
           this.$notify({
             type: 'warning',
             title: '주의',
-            message
+            message,
+            duration: 3000
           })
         },
         notifyInfo(message) {
           this.$notify({
             type: 'info',
             title: '정보',
-            message
+            message,
+            duration: 3000
           })
         },
         messageSuccess(message) {

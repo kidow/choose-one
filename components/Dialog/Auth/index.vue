@@ -1,5 +1,5 @@
 <template>
-  <vue-dialog title="로그인" :visible="visible">
+  <vue-dialog title="로그인" :visible="visible" @close="close">
     <span>login</span>
   </vue-dialog>
 </template>
@@ -19,6 +19,11 @@ export default {
   },
   components: {
     VueDialog
+  },
+  methods: {
+    close() {
+      this.$store.commit('auth/SAVE_VISIBLE', false)
+    }
   }
 }
 </script>
