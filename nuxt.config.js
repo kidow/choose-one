@@ -36,7 +36,8 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
     '@nuxtjs/style-resources',
-    'nuxt-device-detect'
+    'nuxt-device-detect',
+    ['@nuxtjs/moment', { locales: ['ko'], defaultLocales: 'ko' }]
   ],
 
   axios: {},

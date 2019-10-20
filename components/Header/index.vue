@@ -1,7 +1,7 @@
 <template>
   <header>
     <span>Logo</span>
-    <span>Menu</span>
+    <span @click="$store.commit('SAVE_VISIBLE', true)">새 글 등록</span>
   </header>
 </template>
 
@@ -17,10 +17,17 @@ header {
   top: 0;
   width: 100%;
   height: 80px;
-  background: $oc-gray-8;
-  padding: 1rem;
+  background: $oc-gray-9;
+  padding: 1rem 3rem;
+  @include media('<phone') {
+    padding: 1rem;
+  }
   display: flex;
   align-items: center;
   justify-content: space-between;
+  span {
+    color: $oc-gray-2;
+    cursor: pointer;
+  }
 }
 </style>

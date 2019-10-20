@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title">
+  <el-dialog :title="title" :visible.sync="visible" :fullscreen="fullscreen">
     <slot />
   </el-dialog>
 </template>
@@ -13,6 +13,10 @@ export default {
       default: ''
     },
     visible: {
+      type: Boolean,
+      default: false
+    },
+    fullscreen: {
       type: Boolean,
       default: false
     }
