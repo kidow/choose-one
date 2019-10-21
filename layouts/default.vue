@@ -1,21 +1,29 @@
 <template>
   <div>
     <vue-header />
+    <div style="height: 80px" />
     <nuxt />
-    <!-- <el-col :lg="3" :sm="2" :xs="0" style="min-height: 1px" />
-    <el-col :lg="18" :sm="20" :xs="24"></el-col>
-    <el-col :lg="3" :sm="2" :xs="0" />-->
     <vue-dialog-auth />
+    <vue-dialog-post />
+    <vue-dialog-comment />
+    <vue-dialog-report />
+    <el-backtop />
   </div>
 </template>
 
 <script>
 import VueHeader from '~/components/Header'
 import VueDialogAuth from '~/components/Dialog/Auth'
+import VueDialogPost from '~/components/Dialog/Post'
+import VueDialogComment from '~/components/Dialog/Comment'
+import VueDialogReport from '~/components/Dialog/Report'
 export default {
   components: {
     VueHeader,
-    VueDialogAuth
+    VueDialogAuth,
+    VueDialogPost,
+    VueDialogComment,
+    VueDialogReport
   }
 }
 </script>

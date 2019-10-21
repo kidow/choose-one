@@ -1,11 +1,15 @@
 <template>
   <el-dialog
     :title="title"
+    :width="$device.isMobile ? '100%' : width"
     :visible.sync="visible"
-    :fullscreen="$device.isMobile"
-    @close="$emit('close')"
+    :before-close="_ => $emit('close')"
   >
     <slot />
+    <span slot="footer" v-if="showFooter">
+      <el-button size="medium" @click="$emit('close')">취소</el-button>
+      <el-button size="medium" @click="$emit('ok')" type="primary">{{ submitText }}</el-button>
+    </span>
   </el-dialog>
 </template>
 
@@ -25,6 +29,18 @@ export default {
     fullscreen: {
       type: Boolean,
       default: false
+    },
+    submitText: {
+      type: String,
+      default: ''
+    },
+    width: {
+      type: String,
+      default: '50%'
+    },
+    showFooter: {
+      type: Boolean,
+      default: true
     }
   }
 }

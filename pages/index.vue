@@ -1,5 +1,5 @@
 <template>
-  <el-row style="margin-top: 80px">
+  <el-row>
     <el-col class="choose__container">
       <vue-card position="left" />
       <span class="or">또는</span>
@@ -12,7 +12,7 @@
         <vue-meta />
         <div class="comments__length">
           <span class="length">{{ comments.length }} comments</span>
-          <span class="button">댓글 등록</span>
+          <span class="button" @click="onComment">댓글 등록</span>
         </div>
         <vue-comments :comments="comments" />
       </el-col>
@@ -41,8 +41,14 @@ export default {
   },
   computed: {
     ...mapGetters({
-      comments: 'comment/GET_COMMENTS'
+      comments: 'comment/GET_COMMENTS',
+      isLoggedIn: 'auth/IS_LOGGED_IN'
     })
+  },
+  methods: {
+    onComment() {
+      if (!this.isLoggedIn) return this.$store.commit('auth/SAVE_VISIBLE', true)
+    }
   }
 }
 </script>
@@ -60,7 +66,8 @@ export default {
   .or {
     position: absolute;
     top: 37%;
-    left: 41%;
+    left: auto;
+    right: auto;
     width: 70px;
     height: 70px;
     border-radius: 50%;

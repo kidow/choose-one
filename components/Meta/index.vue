@@ -1,10 +1,10 @@
 <template>
   <div class="meta__container">
     <div class="row">
-      <i class="fas fa-poll"></i> 228 투표
+      <i class="fas fa-poll"></i> 총 228 투표
     </div>
     <br />
-    <div class="row pointer">
+    <div class="row">
       <i class="far fa-thumbs-up"></i> 228 공감
     </div>
     <br />
@@ -19,7 +19,7 @@
       </div>
     </el-popover>
     <br />
-    <div class="row pointer report">
+    <div class="row pointer report" @click="$store.commit('report/SAVE_VISIBLE', true)">
       <i class="fas fa-bell"></i> 신고
     </div>
     <br />

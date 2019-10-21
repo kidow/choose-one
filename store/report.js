@@ -1,19 +1,14 @@
 export const state = () => ({
-  visible: false,
-  user: {}
+  visible: false
 })
 
 export const getters = {
-  GET_VISIBLE: state => state.visible,
-  IS_LOGGED_IN: state => !!state.user.id
+  GET_VISIBLE: state => state.visible
 }
 
 export const mutations = {
   SAVE_VISIBLE(state, visible) {
     state.visible = visible
-  },
-  SAVE_USER(state, user) {
-    state.user = user
   }
 }
 
