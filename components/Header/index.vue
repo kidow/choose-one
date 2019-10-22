@@ -1,13 +1,13 @@
 <template>
   <header>
     <span>Logo</span>
-    <el-dropdown v-if="!isLoggedIn" @command="command">
+    <el-dropdown v-if="isLoggedIn" @command="command">
       <i class="fas fa-user-circle"></i>
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item command="1">로그아웃</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
-    <span v-else @click="rightClick">로그인</span>
+    <span v-else @click="rightClick">새 주제</span>
   </header>
 </template>
 

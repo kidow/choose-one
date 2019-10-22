@@ -13,13 +13,15 @@
         <i class="fas fa-link"></i> 공유
       </div>
       <div class="actions">
-        <i class="fab fa-facebook-square"></i>
-        <i class="fab fa-twitter-square"></i>
+        <img src="~/assets/icons/facebook.png" alt="facebook" />
+        <img src="~/assets/icons/twitter.png" alt="twitter" />
+        <!-- <i class="fab fa-facebook-square"></i>
+        <i class="fab fa-twitter-square"></i>-->
         <i class="fas fa-copy" @click="onCopy"></i>
       </div>
     </el-popover>
     <br />
-    <div class="row pointer report" @click="$store.commit('report/SAVE_VISIBLE', true)">
+    <div class="row pointer report" @click="onReport">
       <i class="fas fa-bell"></i> 신고
     </div>
     <br />
@@ -32,6 +34,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'VueMeta',
   methods: {
@@ -42,7 +45,16 @@ export default {
       } catch (err) {
         console.log(err)
       }
+    },
+    onReport() {
+      if (!this.isLoggedIn) this.$store.commit('auth/SAVE_VISIBLE', true)
+      else this.$store.commit('report/SAVE_VISIBLE', true)
     }
+  },
+  computed: {
+    ...mapGetters({
+      isLoggedIn: 'auth/IS_LOGGED_IN'
+    })
   }
 }
 </script>
@@ -79,6 +91,11 @@ export default {
     &:active {
       filter: brightness(0.85);
     }
+  }
+  img {
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
   }
   .fa-facebook-square {
     color: #3b5998;

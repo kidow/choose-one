@@ -2,13 +2,24 @@
   <el-row>
     <el-col class="choose__container">
       <vue-card position="left" />
-      <span class="or">또는</span>
+      <span class="or">
+        또는
+        <!-- <i class="el-icon-back"></i> -->
+        <!-- <i class="el-icon-right"></i> -->
+      </span>
       <vue-card position="right" />
     </el-col>
     <div>
       <el-col :lg="3" :sm="2" :xs="0" style="min-height: 1px" />
       <el-col :lg="18" :sm="20" :xs="24">
-        <vue-banner />
+        <div class="banner__container">
+          <span class="left">{{ title }}</span>
+          <span class="right">
+            <i class="el-icon-star-on" @click="addStar"></i>
+            <i class="el-icon-caret-left" @click="$router.back()"></i>
+            <i class="el-icon-caret-right" @click="nextQuestion"></i>
+          </span>
+        </div>
         <vue-meta />
         <div class="comments__length">
           <span class="length">{{ comments.length }} comments</span>
@@ -23,14 +34,12 @@
 
 <script>
 import VueCard from '~/components/Card'
-import VueBanner from '~/components/Banner'
 import VueMeta from '~/components/Meta'
 import VueComments from '~/components/Comments'
 import { mapGetters } from 'vuex'
 export default {
   components: {
     VueCard,
-    VueBanner,
     VueMeta,
     VueComments
   },
@@ -48,6 +57,22 @@ export default {
   methods: {
     onComment() {
       if (!this.isLoggedIn) return this.$store.commit('auth/SAVE_VISIBLE', true)
+    },
+    async addStar() {
+      console.log('addStar')
+    },
+    async nextQuestion() {
+      console.log('nextQuestion')
+    }
+  },
+  data: _ => ({
+    meta: {},
+    title: '하나냐 여러개냐'
+  }),
+  async asyncData({ app }) {
+    try {
+    } catch (err) {
+      console.log(err)
     }
   }
 }
@@ -78,6 +103,10 @@ export default {
     justify-content: center;
     z-index: 2;
   }
+  i {
+    font-size: 22px;
+    font-weight: bold;
+  }
 }
 .sub-banner {
   height: 40px;
@@ -97,6 +126,27 @@ export default {
   .button {
     cursor: pointer;
     color: $oc-gray-7;
+  }
+}
+.banner__container {
+  height: 40px;
+  border-bottom: 1px solid $oc-gray-4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  .left {
+    font-weight: bold;
+  }
+  .right {
+    cursor: pointer;
+    color: $oc-gray-6;
+    i {
+      font-size: 32px;
+      &:hover {
+        color: $oc-gray-7;
+      }
+    }
   }
 }
 </style>
