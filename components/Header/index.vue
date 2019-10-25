@@ -1,6 +1,7 @@
 <template>
   <header>
     <span>Logo</span>
+    <input v-model="search" placeholder="검색..." @keyup.enter="onSearch" />
     <el-dropdown v-if="isLoggedIn" @command="command">
       <i class="fas fa-user-circle"></i>
       <el-dropdown-menu slot="dropdown">
@@ -24,13 +25,19 @@ export default {
     },
     command(item) {
       if (item === '1') this.logout()
+    },
+    onSearch() {
+      if (this.search) this.$router.push(`/search?s=${this.search}`)
     }
   },
   computed: {
     ...mapGetters({
       isLoggedIn: 'auth/IS_LOGGED_IN'
     })
-  }
+  },
+  data: _ => ({
+    search: ''
+  })
 }
 </script>
 
@@ -56,6 +63,18 @@ header {
   }
   i {
     font-size: 36px;
+  }
+  input {
+    background: transparent;
+    border: 1px solid $oc-gray-7;
+    color: $oc-gray-2;
+    width: 180px;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 1rem;
+    &::placeholder {
+      color: $oc-gray-2;
+    }
   }
 }
 </style>

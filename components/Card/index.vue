@@ -4,11 +4,17 @@
     @click="cardClick"
     :class="{ left: position === 'left', right: position === 'right' }"
   >
-    <div class="checkmark">
-      <vue-count-to v-if="completed" :duration="3000" :endVal="endVal" />%
-    </div>
+    <div class="card__box">
+      <div class="checkmark" v-if="completed">
+        <vue-count-to :duration="3000" :endVal="leftPercentage" />
+        <span>%</span>
+      </div>
+      <div class="total-votes" v-if="completed">
+        <vue-count-to :duration="2500" :endVal="rightPercentage"></vue-count-to>
+      </div>
 
-    <span :style="`font-size: ${completed ? '16' : '22'}px`">{{ text }}</span>
+      <span :style="`font-size: ${completed ? '16' : '22'}px`">{{ text }}</span>
+    </div>
   </div>
 </template>
 
@@ -23,15 +29,19 @@ export default {
     },
     text: {
       type: String,
-      default: 'Read Harry Potter'
+      default: ''
     },
-    endVal: {
+    leftPercentage: {
+      type: Number,
+      default: 0
+    },
+    rightPercentage: {
       type: Number,
       default: 0
     },
     completed: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   components: {
@@ -53,8 +63,8 @@ export default {
   color: white;
   cursor: pointer;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   &:hover {
     filter: brightness(1.05);
   }
@@ -66,6 +76,20 @@ export default {
   }
   &.right {
     background: $oc-red-5;
+  }
+  .card__box {
+    text-align: center;
+    padding: 30px;
+    .checkmark {
+      font-size: 60px;
+      @include media('<phone') {
+        font-size: 45px;
+      }
+    }
+    .total-votes {
+      font-size: 20px;
+      margin: 3px 0 15px;
+    }
   }
 }
 </style>

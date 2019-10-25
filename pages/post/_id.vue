@@ -44,7 +44,7 @@ export default {
   },
   head() {
     return {
-      title: '츄즈원'
+      title: `${this.title} | 츄즈원`
     }
   },
   computed: {
