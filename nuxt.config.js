@@ -1,9 +1,19 @@
 const TITLE = '츄즈원 - 하나만 선택하시오'
 const DESCRIPTION = '단 하나의 선택지만 골라야 하는 밸런스 게임'
 
+const config = {
+  apiKey: 'AIzaSyCy4enlijh3Jzcth6rJWH_4fEvwY5Hv5Xk',
+  authDomain: 'choose-one-f75dd.firebaseapp.com',
+  databaseURL: 'https://choose-one-f75dd.firebaseio.com',
+  projectId: 'choose-one-f75dd',
+  storageBucket: 'choose-one-f75dd.appspot.com',
+  messagingSenderId: '34063304882',
+  appId: '1:34063304882:web:ccb3e7af1a4eb64278a1ab'
+}
+
 export default {
   mode: 'universal',
-
+  srcDir: 'app/',
   head: {
     title: TITLE,
     meta: [
@@ -50,7 +60,10 @@ export default {
 
   axios: {},
   styleResources: {
-    scss: ['node_modules/open-color/open-color.scss', './assets/scss/main.scss']
+    scss: [
+      'node_modules/open-color/open-color.scss',
+      './app/assets/scss/main.scss'
+    ]
   },
 
   build: {
