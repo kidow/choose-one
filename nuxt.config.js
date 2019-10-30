@@ -54,7 +54,11 @@ export default {
 
   css: ['element-ui/lib/theme-chalk/index.css'],
 
-  plugins: ['@/plugins/element-ui', '@/plugins/vue-clipboard2'],
+  plugins: [
+    '@/plugins/element-ui',
+    '@/plugins/vue-clipboard2',
+    '@/plugins/firebase'
+  ],
 
   buildModules: [],
 
@@ -69,10 +73,7 @@ export default {
 
   axios: {},
   styleResources: {
-    scss: [
-      'node_modules/open-color/open-color.scss',
-      './app/assets/scss/main.scss'
-    ]
+    scss: ['node_modules/open-color/open-color.scss', '~/assets/scss/main.scss']
   },
 
   build: {
