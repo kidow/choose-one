@@ -1,15 +1,16 @@
+require('dotenv').config()
+const {
+  FIREBASE_API_KEY,
+  FIREBASE_AUTH_DOMAIN,
+  FIREBASE_DATABASE_URL,
+  FIREBASE_PROJECT_ID,
+  FIREBASE_STORAGE_BUCKET,
+  FIREBASE_MESSAGING_SENDER_ID,
+  FIREBASE_APP_ID
+} = process.env
+
 const TITLE = '츄즈원 - 하나만 선택하시오'
 const DESCRIPTION = '단 하나의 선택지만 골라야 하는 밸런스 게임'
-
-const config = {
-  apiKey: 'AIzaSyCy4enlijh3Jzcth6rJWH_4fEvwY5Hv5Xk',
-  authDomain: 'choose-one-f75dd.firebaseapp.com',
-  databaseURL: 'https://choose-one-f75dd.firebaseio.com',
-  projectId: 'choose-one-f75dd',
-  storageBucket: 'choose-one-f75dd.appspot.com',
-  messagingSenderId: '34063304882',
-  appId: '1:34063304882:web:ccb3e7af1a4eb64278a1ab'
-}
 
 export default {
   mode: 'universal',
@@ -40,7 +41,15 @@ export default {
       }
     ]
   },
-
+  env: {
+    FIREBASE_API_KEY,
+    FIREBASE_APP_ID,
+    FIREBASE_AUTH_DOMAIN,
+    FIREBASE_DATABASE_URL,
+    FIREBASE_MESSAGING_SENDER_ID,
+    FIREBASE_PROJECT_ID,
+    FIREBASE_STORAGE_BUCKET
+  },
   loading: { color: '#fff' },
 
   css: ['element-ui/lib/theme-chalk/index.css'],
