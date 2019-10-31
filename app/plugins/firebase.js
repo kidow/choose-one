@@ -25,6 +25,6 @@ export default ({ env }, inject) => {
     firebase.initializeApp(config)
   }
   inject('firebase', firebase)
-  inject('firestore', firebase.firestore())
-  inject('auth', firebase.auth())
+  inject('firestore', firebase.firestore)
+  inject('auth', firebase.auth)
 }

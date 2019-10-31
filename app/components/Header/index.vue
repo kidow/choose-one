@@ -2,13 +2,13 @@
   <header>
     <span>Logo</span>
     <input v-model="search" placeholder="검색..." @keyup.enter="onSearch" />
-    <el-dropdown v-if="isLoggedIn" @command="command">
+    <span v-if="isAnonymous" @click="rightClick">새 주제</span>
+    <el-dropdown v-else-if="isLoggedIn" @command="command">
       <i class="fas fa-user-circle"></i>
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item command="1">로그아웃</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
-    <span v-else @click="rightClick">새 주제</span>
   </header>
 </template>
 
@@ -32,7 +32,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isLoggedIn: 'auth/IS_LOGGED_IN'
+      isLoggedIn: 'auth/IS_LOGGED_IN',
+      isAnonymous: 'auth/IS_ANONYMOUS'
     })
   },
   data: _ => ({
