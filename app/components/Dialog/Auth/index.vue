@@ -1,13 +1,13 @@
 <template>
   <vue-dialog
     submitText="로그인"
-    title="로그인"
+    :title="path"
     :visible="visible"
     @close="$store.commit('auth/SAVE_VISIBLE', false)"
-    width="25%"
+    width="30%"
     :showFooter="false"
   >
-    <div class="button__container facebook">
+    <!-- <div class="button__container facebook">
       <img src="~/assets/icons/facebook.png" alt="facebook" />
       <span>페이스북으로 로그인</span>
     </div>
@@ -18,11 +18,38 @@
     <div class="button__container kakao">
       <img src="~/assets/icons/kakao.png" alt="kakao" />
       <span>카카오로 로그인</span>
-    </div>
-    <div class="desc">
-      <nuxt-link to="/terms" target="_blank">이용 약관</nuxt-link>과
-      <nuxt-link to="/privacy" target="_blank">개인정보처리방침</nuxt-link>에 동의합니다.
-    </div>
+    </div>-->
+    <template v-if="path === '로그인'">
+      <form @submit.prevent="onLogin">
+        <el-input v-model="email" placeholder="이메일" />
+        <el-input v-model="password" placeholder="패스워드 (8 ~ 16자)" type="password" />
+        <div style="display:flex; justify-content:space-between">
+          <span @click="path = '비밀번호 찾기'" style="cursor:pointer">비밀번호 찾기</span>
+          <span @click="path = '회원가입'" style="cursor:pointer">회원가입</span>
+        </div>
+        <el-button native-type="submit">로그인</el-button>
+      </form>
+    </template>
+    <template v-else-if="path === '회원가입'">
+      <form @submit.prevent="onSignup">
+        <el-input v-model="email" placeholder="이메일" />
+        <el-input v-model="password" placeholder="패스워드 (8 ~ 16자)" type="password" />
+        <div style="text-align:right; cursor:pointer" @click="path = '로그인'">로그인</div>
+        <el-button native-type="submit">회원가입</el-button>
+      </form>
+      <el-divider />
+      <div class="desc">
+        <nuxt-link to="/terms" target="_blank">이용약관</nuxt-link>과
+        <nuxt-link to="/privacy" target="_blank">개인정보처리방침</nuxt-link>에 동의합니다.
+      </div>
+    </template>
+    <template v-else-if="path === '비밀번호 찾기'">
+      <form @submit.prevent="onSendEmail">
+        <el-input v-model="email" placeholder="이메일" />
+        <div style="cursor:pointer; text-align:right" @click="path ='로그인'">로그인</div>
+        <el-button native-type="submit">메일 전송</el-button>
+      </form>
+    </template>
   </vue-dialog>
 </template>
 
@@ -32,7 +59,10 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'VueDialogAuth',
   data: _ => ({
-    loading: false
+    loading: false,
+    email: '',
+    password: '',
+    path: '로그인'
   }),
   computed: {
     ...mapGetters({
@@ -41,6 +71,17 @@ export default {
   },
   components: {
     VueDialog
+  },
+  methods: {
+    async onLogin() {
+      console.log('onLogin')
+    },
+    async onSignup() {
+      console.log('onSignup')
+    },
+    async onSendEmail() {
+      console.log('onSendEmail')
+    }
   }
 }
 </script>

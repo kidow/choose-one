@@ -27,11 +27,17 @@
     <br />
     <div class="row">
       <i class="fas fa-tags"></i>
-      <el-tag type="info" size="mini">category</el-tag>
-      <el-tag type="info" size="mini">category2</el-tag>
+      <el-tag
+        v-for="(tag, i) in tags"
+        :key="i"
+        @click="$router.push(`/tags/${tag}`)"
+        type="info"
+        size="mini"
+        style="margin-right: 4px"
+      >{{ tag }}</el-tag>
     </div>
   </div>
-</template>
+</template> 
 
 <script>
 import { mapGetters } from 'vuex'
@@ -55,7 +61,10 @@ export default {
     ...mapGetters({
       isLoggedIn: 'auth/IS_LOGGED_IN'
     })
-  }
+  },
+  data: _ => ({
+    tags: ['category', 'category2']
+  })
 }
 </script>
 
