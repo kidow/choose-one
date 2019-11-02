@@ -5,7 +5,7 @@
     </div>
     <br />
     <div class="row">
-      <i class="far fa-thumbs-up"></i> 228 공감
+      <i class="far fa-thumbs-up"></i> 228 추천
     </div>
     <br />
     <el-popover placement="right" trigger="click">

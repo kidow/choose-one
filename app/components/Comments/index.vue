@@ -19,7 +19,7 @@
         <div class="info__timestamp">{{ $moment(comment.createdAt).fromNow() }}</div>
         <p class="info__content">{{ comment.content }}</p>
         <div class="info__actions">
-          <span class="action">공감</span>
+          <span class="action">추천</span>
           <el-divider direction="vertical" />
           <span class="action">답글</span>
         </div>

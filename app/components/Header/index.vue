@@ -2,11 +2,14 @@
   <header>
     <span>Logo</span>
     <input v-model="search" placeholder="검색..." @keyup.enter="onSearch" />
-    <span v-if="isAnonymous" @click="rightClick">새 주제</span>
-    <el-dropdown v-else-if="isLoggedIn" @command="command">
+    <span v-if="!isLoggedIn" @click="rightClick">새 주제</span>
+    <el-dropdown v-else @command="command">
       <i class="fas fa-user-circle"></i>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item command="1">로그아웃</el-dropdown-item>
+        <el-dropdown-item command="1">새 주제</el-dropdown-item>
+        <el-dropdown-item command="2">이메일 변경</el-dropdown-item>
+        <el-dropdown-item command="3">비밀번호 변경</el-dropdown-item>
+        <el-dropdown-item command="4">로그아웃</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
   </header>
@@ -21,7 +24,12 @@ export default {
       if (!this.isLoggedIn) return this.$store.commit('auth/SAVE_VISIBLE', true)
     },
     async logout() {
-      console.log('logout')
+      try {
+        await this.$store.dispatch('auth/LOG_OUT')
+        this.messageSuccess('로그아웃하였습니다.')
+      } catch (err) {
+        console.log(err)
+      }
     },
     command(item) {
       if (item === '1') this.logout()
@@ -32,8 +40,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isLoggedIn: 'auth/IS_LOGGED_IN',
-      isAnonymous: 'auth/IS_ANONYMOUS'
+      isLoggedIn: 'auth/IS_LOGGED_IN'
     })
   },
   data: _ => ({

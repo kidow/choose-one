@@ -1,12 +1,14 @@
 export const state = () => ({
   visible: false,
-  user: null
+  user: {
+    email: '',
+    isAnonymous: false
+  }
 })
 
 export const getters = {
   GET_VISIBLE: state => state.visible,
-  IS_LOGGED_IN: state => !!state.user.uid && !state.user.isAnonymous,
-  IS_ANONYMOUS: state => state.user.isAnonymous
+  IS_LOGGED_IN: state => !!state.user.email
 }
 
 export const mutations = {
@@ -32,30 +34,81 @@ export const actions = {
   },
   ME({ commit }) {
     return new Promise((resolve, reject) => {
-      this.$firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-          commit('SAVE_USER', user)
-          resolve(user)
-        } else {
-          resolve(false)
-        }
-      })
+      const user = this.$firebase.auth().currentUser
+      if (user) {
+        commit('SAVE_USER', {
+          email: user.email,
+          isAnonymous: user.isAnonymous,
+          displayName: user.displayName
+        })
+        resolve(user)
+      } else {
+        resolve(false)
+      }
+      // this.$firebase.auth().onAuthStateChanged(user => {
+      //   if (user) {
+      //     commit('SAVE_USER', {
+      //       email: user.email,
+      //       isAnonymous: user.isAnonymous,
+      //       displayName: user.displayName
+      //     })
+      //     resolve(true)
+      //   } else {
+      //     resolve(false)
+      //   }
+      // })
     })
   },
-  SIGN_IN({ commit }, { email, password }) {
+  SIGN_UP({ commit }, { email, password }) {
+    return new Promise(async (resolve, reject) => {
+      await this.$firebase.auth().signOut()
+      console.log(this.$firebase.auth().currentUser)
+      // try {
+      //   await this.$firebase.auth().signOut()
+      //   const {
+      //     user
+      //   } = await this.$firebase
+      //     .auth()
+      //     .createUserWithEmailAndPassword(email, password)
+      //   console.log('user: ', user)
+      //   const newUser = {
+      //     email: user.email,
+      //     isAnonymous: false
+      //     // displayName: user.displayName
+      //   }
+      //   commit('SAVE_USER', newUser)
+      //   resolve(true)
+      // } catch (err) {
+      //   reject(err)
+      // }
+    })
+  },
+  LOG_OUT({ dispatch }) {
     return new Promise(async (resolve, reject) => {
       try {
-        const credential = this.$firebase.auth.EmailAuthProvider.credential(
-          email,
-          password
-        )
-        const {
-          user
-        } = await this.$firebase
-          .auth()
-          .currentUser.linkAndRetrieveDataWithCredential(credential)
-        console.log('cred: ', user)
-        commit('SAVE_USER', user)
+        await this.$firebase.auth().signOut()
+        await dispatch('SIGN_IN_ANONYMOUS')
+        resolve(true)
+      } catch (err) {
+        reject(err)
+      }
+    })
+  },
+  LOG_IN({ dispatch }, { email, password }) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.$firebase.auth().signInWithEmailAndPassword(email, password)
+        await dispatch('ME')
+        resolve(true)
+      } catch (err) {
+        reject(err)
+      }
+    })
+  },
+  SEND_RESET_EMAIL(_, email) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.$firebase.auth().sendPasswordResetEmail(email)
         resolve(true)
       } catch (err) {
         reject(err)

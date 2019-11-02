@@ -17,10 +17,9 @@ export default () => {
         notifyError(message) {
           this.$notify({
             type: 'error',
-            title: '실패',
+            title: '죄송합니다.',
             message:
-              message ||
-              '죄송합니다. 서버 오류가 발생했습니다. 나중에 다시 시도해주세요.',
+              message || '서버 오류가 발생했습니다. 나중에 다시 시도해주세요.',
             duration: 3000
           })
         },

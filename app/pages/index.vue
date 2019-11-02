@@ -13,7 +13,10 @@
     <el-col :lg="3" :sm="2" :xs="0" style="min-height: 1px" />
     <el-col :lg="18" :sm="20" :xs="24">
       <div class="banner__container">
-        <span class="left">{{ title }}</span>
+        <div class="left">
+          <span class="title">{{ title }}</span>
+          <span class="author">- {{ author }}</span>
+        </div>
         <span class="right">
           <i class="el-icon-star-on" @click="addStar"></i>
           <i class="el-icon-caret-left" @click="$router.back()"></i>
@@ -22,8 +25,8 @@
       </div>
       <vue-meta />
       <div class="comments__length">
-        <span class="length">{{ comments.length }} comments</span>
-        <span class="button" @click="onComment">댓글 등록</span>
+        <span class="length">{{ comments.length }} 개의 댓글</span>
+        <span class="button" @click="createComment">댓글 등록</span>
       </div>
       <vue-comments :comments="comments" />
     </el-col>
@@ -54,10 +57,11 @@ export default {
     })
   },
   methods: {
-    onComment() {
+    createComment() {
       if (!this.isLoggedIn) return this.$store.commit('auth/SAVE_VISIBLE', true)
     },
     async addStar() {
+      if (!this.isLoggedIn) return this.$store.commit('auth/SAVE_VISIBLE', true)
       console.log('addStar')
     },
     async nextQuestion() {
@@ -76,7 +80,8 @@ export default {
     completed: false,
     loading: false,
     index: 0,
-    nextId: 0
+    nextId: 0,
+    author: 'kidow'
   }),
   async asyncData({ app }) {
     try {
@@ -145,7 +150,12 @@ export default {
   justify-content: space-between;
   padding: 0 1rem;
   .left {
-    font-weight: bold;
+    .title {
+      font-weight: bold;
+    }
+    .author {
+      color: $oc-gray-6;
+    }
   }
   .right {
     cursor: pointer;
