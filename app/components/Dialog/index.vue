@@ -4,6 +4,7 @@
     :width="$device.isMobile ? '100%' : width"
     :visible.sync="visible"
     :before-close="_ => $emit('close')"
+    :close-on-click-modal="false"
   >
     <slot />
     <span slot="footer" v-if="showFooter">

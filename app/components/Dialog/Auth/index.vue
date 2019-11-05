@@ -21,7 +21,7 @@
     </div>-->
     <template v-if="path === '로그인'">
       <form @submit.prevent="onLogin" v-loading="loading">
-        <el-input v-model="email" placeholder="이메일" />
+        <el-input v-model="email" placeholder="이메일" type="email" />
         <el-input v-model="password" placeholder="패스워드 (8 ~ 16자)" type="password" />
         <div style="display:flex; justify-content:space-between">
           <span @click="path = '비밀번호 찾기'" style="cursor:pointer">비밀번호 찾기</span>
@@ -30,9 +30,10 @@
         <el-button native-type="submit">로그인</el-button>
       </form>
     </template>
-    <template v-else-if="path === '회원가입'" v-loading="loading">
-      <form @submit.prevent="onSignup">
-        <el-input v-model="email" placeholder="이메일" />
+    <template v-else-if="path === '회원가입'">
+      <form @submit.prevent="onSignup" v-loading="loading">
+        <el-input v-model="displayName" placeholder="닉네임 (최대 9자)" />
+        <el-input v-model="email" placeholder="이메일" type="email" />
         <el-input v-model="password" placeholder="패스워드 (8 ~ 16자)" type="password" />
         <div style="text-align:right; cursor:pointer" @click="path = '로그인'">로그인</div>
         <el-button native-type="submit">회원가입</el-button>
@@ -43,9 +44,9 @@
         <nuxt-link to="/privacy" target="_blank">개인정보처리방침</nuxt-link>에 동의합니다.
       </div>
     </template>
-    <template v-else-if="path === '비밀번호 찾기'" v-loading="loading">
-      <form @submit.prevent="onSendResetEmail">
-        <el-input v-model="email" placeholder="이메일" />
+    <template v-else-if="path === '비밀번호 찾기'">
+      <form @submit.prevent="onSendResetEmail" v-loading="loading">
+        <el-input v-model="email" placeholder="이메일" type="email" />
         <div style="cursor:pointer; text-align:right" @click="path ='로그인'">로그인</div>
         <el-button native-type="submit">메일 전송</el-button>
       </form>
@@ -64,7 +65,8 @@ export default {
     loading: false,
     email: '',
     password: '',
-    path: '로그인'
+    path: '로그인',
+    displayName: ''
   }),
   computed: {
     ...mapGetters({
@@ -76,12 +78,19 @@ export default {
   },
   methods: {
     async onLogin() {
-      const { email, password } = this
-      const validated = this.validate(email, password)
-      if (!validated) return
+      if (!this.email) return this.notifyWarning('이메일을 입력하세요.')
+      if (!this.password) return this.notifyWarning('비밀번호를 입력해 주세요.')
+      if (!isEmail(this.email))
+        return this.notifyWarning('올바른 이메일을 입력해주세요.')
+      if (!isLength(this.password, { min: 8, max: 16 }))
+        return this.notifyWarning('비밀번호는 8 ~ 16자 사이로 입력해 주세요.')
+
       this.loading = true
       try {
-        await this.$store.dispatch('auth/LOG_IN', { email, password })
+        await this.$store.dispatch('auth/LOG_IN', {
+          email: this.email,
+          password: this.password
+        })
         this.messageSuccess('로그인되었습니다.')
       } catch (err) {
         console.log(err)
@@ -91,14 +100,25 @@ export default {
       }
     },
     async onSignup() {
-      const { email, password } = this
-      const validated = this.validate(email, password)
-      if (!validated) return
+      if (!this.email) return this.notifyWarning('이메일을 입력하세요.')
+      if (!this.password) return this.notifyWarning('비밀번호를 입력해 주세요.')
+      if (!this.displayName)
+        return this.notifyWarning('닉네임을 입력해 주세요.')
+      if (!isEmail(this.email))
+        return this.notifyWarning('올바른 이메일을 입력해주세요.')
+      if (!isLength(this.password, { min: 8, max: 16 }))
+        return this.notifyWarning('비밀번호는 8 ~ 16자 사이로 입력해 주세요.')
+      if (!isLength(this.displayName, { max: 9 }))
+        return this.notifyWarning('닉네임은 최대 9자로 지어주세요.')
+
       this.loading = true
       try {
-        await this.$store.dispatch('auth/SIGN_UP', { email, password })
+        await this.$store.dispatch('auth/SIGN_UP', {
+          email: this.email,
+          password: this.password,
+          displayName: this.displayName
+        })
         this.messageSuccess('성공적으로 회원가입되었습니다.')
-        this.$store.commit('auth/SAVE_VISIBLE', false)
       } catch (err) {
         console.log(err)
         this.errorHandler(err.code)
@@ -108,12 +128,12 @@ export default {
     },
     async onSendResetEmail() {
       if (!this.email) return
-      else if (!isEmail(this.email))
+      if (!isEmail(this.email))
         return this.notifyWarning('올바른 이메일을 입력하세요.')
+
       this.loading = true
       try {
         await this.$store.dispatch('auth/SEND_RESET_EMAIL', this.email)
-        this.$store.commit('auth/SAVE_VISIBLE', false)
         this.notifySuccess('이메일을 전송했습니다. 확인바랍니다.')
       } catch (err) {
         console.log(err)
@@ -121,19 +141,6 @@ export default {
       } finally {
         this.loading = false
       }
-    },
-    validate(email, password) {
-      if (!this.email || !this.password) {
-        this.notifyWarning('이메일과 비밀번호를 모두 입력해주세요.')
-        return false
-      } else if (!isEmail(this.email)) {
-        this.notifyWarning('올바른 이메일을 입력해주세요.')
-        return false
-      } else if (!isLength(this.password, { min: 8, max: 16 })) {
-        this.notifyWarning('비밀번호는 8 ~ 16자 사이로 입력해주세요.')
-        return false
-      }
-      return true
     },
     errorHandler(code) {
       switch (code) {
@@ -165,6 +172,9 @@ export default {
           break
         case 'auth/wrong-password':
           this.notifyWarning('아이디 혹은 비밀번호가 맞지 않습니다.')
+          break
+        case 'auth/user-token-expired':
+          this.notifyError()
           break
         default:
           this.notifyError()

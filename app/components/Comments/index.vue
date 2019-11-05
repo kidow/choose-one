@@ -7,15 +7,13 @@
       :class="{ child: !!comment.parentId }"
     >
       <el-badge :value="comment.likes">
-        <el-avatar shape="circle" :src="comment.imgUrl" v-if="comment.imgUrl" />
         <el-avatar
           shape="circle"
-          v-else
           src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
         />
       </el-badge>
       <div class="comment__info">
-        <div class="info__name">{{ comment.name }}</div>
+        <div class="info__name">{{ comment.displayName }}</div>
         <div class="info__timestamp">{{ $moment(comment.createdAt).fromNow() }}</div>
         <p class="info__content">{{ comment.content }}</p>
         <div class="info__actions">
@@ -29,13 +27,13 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'VueComments',
-  props: {
-    comments: {
-      type: Array,
-      default: []
-    }
+  computed: {
+    ...mapGetters({
+      comments: 'comment/GET_COMMENTS'
+    })
   }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <header>
-    <span>Logo</span>
+    <span @click="$router.push('/')">Logo</span>
     <input v-model="search" placeholder="검색..." @keyup.enter="onSearch" />
     <span v-if="!isLoggedIn" @click="rightClick">새 주제</span>
     <el-dropdown v-else @command="command">
@@ -32,7 +32,10 @@ export default {
       }
     },
     command(item) {
-      if (item === '1') this.logout()
+      if (item === '1') this.$store.commit('post/SAVE_VISIBLE', true)
+      else if (item === '2') this.notifyInfo('준비 중입니다.')
+      else if (item === '3') this.notifyInfo('준비 중입니다.')
+      else if (item === '4') this.logout()
     },
     onSearch() {
       if (this.search) this.$router.push(`/search?s=${this.search}`)

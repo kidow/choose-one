@@ -1,6 +1,7 @@
 export default async ({ store }) => {
   try {
-    await store.dispatch('auth/ME')
+    const user = await store.dispatch('auth/ME')
+    if (!user) await store.dispatch('auth/SIGN_IN_ANONYMOUS')
   } catch (err) {
     console.log(err)
   }

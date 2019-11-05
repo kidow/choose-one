@@ -75,7 +75,6 @@ export default {
   styleResources: {
     scss: ['node_modules/open-color/open-color.scss', '~/assets/scss/main.scss']
   },
-
   build: {
     transpile: [/^element-ui/],
 

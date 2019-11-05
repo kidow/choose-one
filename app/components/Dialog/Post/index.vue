@@ -1,17 +1,16 @@
 <template>
   <vue-dialog
-    title="새 글"
+    title="새 주제"
     submitText="등록"
     :visible="visible"
     @close="$store.commit('post/SAVE_VISIBLE', false)"
+    @ok="addPost"
   >
-    <el-input placeholder="첫 번째 선택" v-model="optionOne" />
-    <el-input placeholder="두 번째 선택" v-model="optionTwo" />
-    <el-input placeholder="카테고리" v-model="tags" />
-    <span slot="footer">
-      <el-button @click="$store.commit('post/SAVE_VISIBLE', false)">취소</el-button>
-      <el-button type="primary">등록</el-button>
-    </span>
+    <div v-loading="loading">
+      <el-input placeholder="첫 번째 선택" v-model="optionOne" />
+      <el-input placeholder="두 번째 선택" v-model="optionTwo" />
+      <el-input placeholder="카테고리" v-model="tags" />
+    </div>
   </vue-dialog>
 </template>
 
@@ -25,19 +24,45 @@ export default {
   },
   computed: {
     ...mapGetters({
-      visible: 'post/GET_VISIBLE'
+      visible: 'post/GET_VISIBLE',
+      user: 'auth/GET_USER'
     })
   },
   data: _ => ({
     optionOne: '',
     optionTwo: '',
     tags: '',
+    title: '',
     loading: false
   }),
   methods: {
     async addPost() {
-      console.log('addPost')
-      this.$store.commit('post/SAVE_VISIBLE', false)
+      this.loading = true
+      try {
+        const { id } = await this.$firebase
+          .firestore()
+          .collection('posts')
+          .add({
+            optionOne: '마블만 보기',
+            optionTwo: '디시만 보기',
+            title: '단 두 개의 영화만 선택하기',
+            tags: 'tag',
+            uid: this.user.uid,
+            createdAt: new Date(),
+            voteOne: 0,
+            voteTwo: 0,
+            comments: [],
+            votedUids: []
+          })
+        this.$store.commit('post/SAVE_VISIBLE', false)
+        this.messageSuccess('성공적으로 만들었습니다.')
+        this.$router.push(`/post/${id}`)
+      } catch (err) {
+        console.log(err)
+        this.notifyError()
+      } finally {
+        this.loading = false
+      }
     }
   }
 }

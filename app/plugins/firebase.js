@@ -1,6 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firestore'
+import 'firebase/storage'
 
 export default ({ env }, inject) => {
   const {
@@ -10,7 +11,8 @@ export default ({ env }, inject) => {
     FIREBASE_PROJECT_ID,
     FIREBASE_STORAGE_BUCKET,
     FIREBASE_MESSAGING_SENDER_ID,
-    FIREBASE_APP_ID
+    FIREBASE_APP_ID,
+    FIREBASE_STORAGE_URL
   } = env
   if (!firebase.apps.length) {
     const config = {
@@ -25,6 +27,7 @@ export default ({ env }, inject) => {
     firebase.initializeApp(config)
   }
   inject('firebase', firebase)
-  inject('firestore', firebase.firestore)
+  inject('firestore', firebase.firestore())
   inject('auth', firebase.auth)
+  inject('storage', firebase.app().storage(FIREBASE_STORAGE_URL))
 }
