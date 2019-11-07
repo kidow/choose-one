@@ -1,7 +1,7 @@
 <template>
   <div
     class="card__container"
-    @click="cardClick"
+    @click="$emit('cardClick')"
     :class="{ left: position === 'left', right: position === 'right' }"
   >
     <div class="card__box">
@@ -46,12 +46,6 @@ export default {
   },
   components: {
     VueCountTo
-  },
-  methods: {
-    cardClick() {
-      if (this.completed) return
-      this.$emit('cardClick')
-    }
   }
 }
 </script>

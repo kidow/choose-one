@@ -1,5 +1,13 @@
 <template>
-  <vue-post :title="title" :optionOne="optionOne" :optionTwo="optionTwo" :nextId="nextId" />
+  <vue-post
+    :title="title"
+    :optionOne="optionOne"
+    :optionTwo="optionTwo"
+    :nextId="nextId"
+    :voteOne="voteOne"
+    :voteTwo="voteTwo"
+    @voteCount="voteCount"
+  />
 </template>
 
 <script>
@@ -14,9 +22,6 @@ export default {
       title: `${this.title} | 츄즈원`
     }
   },
-  mounted() {
-    // this.get()
-  },
   data: _ => ({
     meta: {},
     title: '하나냐 여러개냐',
@@ -25,7 +30,9 @@ export default {
     index: 0,
     nextId: 0,
     optionOne: '',
-    optionTwo: ''
+    optionTwo: '',
+    voteOne: 0,
+    voteTwo: 0
   }),
   async asyncData({ app, params, store }) {
     try {
@@ -35,24 +42,36 @@ export default {
         .doc(params.id)
         .get()
       const post = postRef.data()
-      // console.log('post: ', post)
-      const querySnapshot = await app.$firebase
+      const commentsRef = await app.$firebase
         .firestore()
         .collection('comments')
-        .where('postId', '==', post.uid)
+        .where('postId', '==', params.id)
         .get()
 
-      const comments = querySnapshot.data()
-      console.log('comments: ', comments)
-      store.commit('comment/SAVE_POST_ID', params.id)
-      // store.commit('comment/SAVE_COMMENTS', comments)
+      let comments = []
+      commentsRef.forEach(doc => {
+        const r = doc.data()
+        const item = Object.assign(r)
+        item.createdAt = r.createdAt.toDate()
+        comments.push(item)
+      })
+      store.commit('post/SAVE_POST_ID', params.id)
+      store.commit('comment/SAVE_COMMENTS', comments)
       return {
         title: post.title,
         optionOne: post.optionOne,
-        optionTwo: post.optionTwo
+        optionTwo: post.optionTwo,
+        voteOne: post.voteOne,
+        voteTwo: post.voteTwo
       }
     } catch (err) {
       console.log(err)
+    }
+  },
+  methods: {
+    voteCount(position) {
+      if (position === 1) voteOne += 1
+      else if (position === 2) voteTwo += 1
     }
   }
 }

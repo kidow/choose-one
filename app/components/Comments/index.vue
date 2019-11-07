@@ -34,6 +34,9 @@ export default {
     ...mapGetters({
       comments: 'comment/GET_COMMENTS'
     })
+  },
+  mounted() {
+    console.log('!!')
   }
 }
 </script>

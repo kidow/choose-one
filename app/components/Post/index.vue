@@ -1,7 +1,12 @@
 <template>
   <el-row>
     <el-col class="choose__container">
-      <vue-card :text="optionOne" position="left" @cardClick="cardClick(1)" :completed="completed" />
+      <vue-card
+        :text="optionOne"
+        position="left"
+        @cardClick="cardClick(1, voteOne)"
+        :completed="completed"
+      />
       <span class="or">
         <i class="el-icon-loading" v-if="loading && !completed"></i>
         <template v-else-if="!loading && !completed">또는</template>
@@ -11,7 +16,7 @@
       <vue-card
         :text="optionTwo"
         position="right"
-        @cardClick="cardClick(2)"
+        @cardClick="cardClick(2, voteTwo)"
         :completed="completed"
       />
     </el-col>
@@ -30,6 +35,7 @@
         <span class="length">{{ comments.length }} 개의 댓글</span>
         <span class="button" @click="createComment">댓글 등록</span>
       </div>
+      <vue-comments />
     </el-col>
     <el-col :lg="3" :sm="2" :xs="0" />
   </el-row>
@@ -59,14 +65,20 @@ export default {
       type: Number,
       default: 0
     },
-    comments: {
-      type: Array,
-      default: _ => []
+    voteOne: {
+      type: Number,
+      default: 0
+    },
+    voteTwo: {
+      type: Number,
+      default: 0
     }
   },
   computed: {
     ...mapGetters({
-      isLoggedIn: 'auth/IS_LOGGED_IN'
+      isLoggedIn: 'auth/IS_LOGGED_IN',
+      postId: 'post/GET_POST_ID',
+      comments: 'comment/GET_COMMENTS'
     })
   },
   components: {
@@ -80,8 +92,23 @@ export default {
     index: 0
   }),
   methods: {
-    async cardClick(number) {
-      console.log(number)
+    async cardClick(position, voteCount) {
+      let options = {}
+      if (position === 1) options.voteOne = voteCount + 1
+      else if (position === 2) options.voteTwo = voteCount + 1
+      if (this.completed) return
+      try {
+        await this.$firebase
+          .firestore()
+          .collection('posts')
+          .doc(this.postId)
+          .update(options)
+        this.completed = true
+        this.$emit('voteCount', position)
+      } catch (err) {
+        console.log(err)
+        this.notifyError()
+      }
     },
     async addStar() {
       console.log('addStar')

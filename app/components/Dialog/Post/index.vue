@@ -9,6 +9,7 @@
     <div v-loading="loading">
       <el-input placeholder="첫 번째 선택" v-model="optionOne" />
       <el-input placeholder="두 번째 선택" v-model="optionTwo" />
+      <el-input placeholder="제목" v-model="title" />
       <el-input placeholder="카테고리" v-model="tags" />
     </div>
   </vue-dialog>
@@ -43,10 +44,10 @@ export default {
           .firestore()
           .collection('posts')
           .add({
-            optionOne: '마블만 보기',
-            optionTwo: '디시만 보기',
-            title: '단 두 개의 영화만 선택하기',
-            tags: 'tag',
+            optionOne: this.optionOne,
+            optionTwo: this.optionTwo,
+            title: this.title,
+            tags: this.tags,
             uid: this.user.uid,
             createdAt: new Date(),
             voteOne: 0,

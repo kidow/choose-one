@@ -22,7 +22,7 @@ export default {
   computed: {
     ...mapGetters({
       visible: 'comment/GET_VISIBLE',
-      postId: 'comment/GET_POST_ID',
+      postId: 'post/GET_POST_ID',
       user: 'auth/GET_USER'
     })
   },
