@@ -6,11 +6,12 @@
   >
     <div class="card__box">
       <div class="checkmark" v-if="completed">
-        <vue-count-to :duration="3000" :endVal="leftPercentage" />
+        <vue-count-to :duration="3000" :endVal="percent" />
         <span>%</span>
       </div>
       <div class="total-votes" v-if="completed">
-        <vue-count-to :duration="2500" :endVal="rightPercentage"></vue-count-to>
+        {{ totalVote }}
+        <!-- <vue-count-to :duration="2500" :endVal="totalVote"></vue-count-to> -->
       </div>
 
       <span :style="`font-size: ${completed ? '16' : '22'}px`">{{ text }}</span>
@@ -31,11 +32,11 @@ export default {
       type: String,
       default: ''
     },
-    leftPercentage: {
+    percent: {
       type: Number,
       default: 0
     },
-    rightPercentage: {
+    totalVote: {
       type: Number,
       default: 0
     },

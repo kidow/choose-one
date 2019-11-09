@@ -28,7 +28,7 @@ export const actions = {
   SIGN_IN_ANONYMOUS({ dispatch }) {
     return new Promise(async (resolve, reject) => {
       try {
-        await this.$firebase.auth().signInAnonymously()
+        await this.$auth().signInAnonymously()
         await dispatch('ME')
         resolve(true)
       } catch (err) {
@@ -38,7 +38,7 @@ export const actions = {
   },
   ME({ commit }) {
     return new Promise((resolve, reject) => {
-      this.$firebase.auth().onAuthStateChanged(user => {
+      this.$auth().onAuthStateChanged(user => {
         if (user) {
           commit('SAVE_USER', {
             email: user.email,
@@ -54,10 +54,8 @@ export const actions = {
   SIGN_UP({ dispatch, commit }, { email, password, displayName }) {
     return new Promise(async (resolve, reject) => {
       try {
-        await this.$firebase
-          .auth()
-          .createUserWithEmailAndPassword(email, password)
-        const user = this.$firebase.auth().currentUser
+        await this.$auth().createUserWithEmailAndPassword(email, password)
+        const user = this.$auth().currentUser
         await user.updateProfile({ displayName })
         await dispatch('LOG_IN', { email, password })
         await dispatch('ME')
@@ -71,7 +69,7 @@ export const actions = {
   LOG_OUT({ dispatch }) {
     return new Promise(async (resolve, reject) => {
       try {
-        await this.$firebase.auth().signOut()
+        await this.$auth().signOut()
         await dispatch('SIGN_IN_ANONYMOUS')
         resolve(true)
       } catch (err) {
@@ -82,7 +80,7 @@ export const actions = {
   LOG_IN({ dispatch, commit }, { email, password }) {
     return new Promise(async (resolve, reject) => {
       try {
-        await this.$firebase.auth().signInWithEmailAndPassword(email, password)
+        await this.$auth().signInWithEmailAndPassword(email, password)
         await dispatch('ME')
         commit('SAVE_VISIBLE', false)
         resolve(true)
@@ -94,7 +92,7 @@ export const actions = {
   SEND_RESET_EMAIL(_, email) {
     return new Promise(async (resolve, reject) => {
       try {
-        await this.$firebase.auth().sendPasswordResetEmail(email)
+        await this.$auth().sendPasswordResetEmail(email)
         resolve(true)
       } catch (err) {
         reject(err)

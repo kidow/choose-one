@@ -1,11 +1,13 @@
 <template>
   <div class="meta__container">
     <div class="row">
-      <i class="fas fa-poll"></i> 총 228 투표
+      <i class="fas fa-poll"></i>
+      총 {{ this.post.voteOne + this.post.voteTwo }} 투표
     </div>
     <br />
     <div class="row">
-      <i class="far fa-thumbs-up"></i> 228 추천
+      <i class="far fa-thumbs-up"></i>
+      {{ this.post.likes }} 추천
     </div>
     <br />
     <el-popover placement="right" trigger="click">
@@ -13,8 +15,8 @@
         <i class="fas fa-link"></i> 공유
       </div>
       <div class="actions">
-        <img src="~/assets/icons/facebook.png" alt="facebook" />
-        <img src="~/assets/icons/twitter.png" alt="twitter" />
+        <img src="~/assets/icons/facebook.png" @click="shareFacebook" alt="facebook" />
+        <img src="~/assets/icons/twitter.png" @click="shareTwitter" alt="twitter" />
         <!-- <i class="fab fa-facebook-square"></i>
         <i class="fab fa-twitter-square"></i>-->
         <i class="fas fa-copy" @click="onCopy"></i>
@@ -46,7 +48,7 @@ export default {
   methods: {
     async onCopy() {
       try {
-        await this.$copyText('VueClipboard')
+        this.$copyText(location.href)
         this.notifySuccess('성공적으로 복사되었습니다.')
       } catch (err) {
         console.log(err)
@@ -55,11 +57,24 @@ export default {
     onReport() {
       if (!this.isLoggedIn) this.$store.commit('auth/SAVE_VISIBLE', true)
       else this.$store.commit('report/SAVE_VISIBLE', true)
+    },
+    shareFacebook() {
+      const { BASE_URL } = process.env
+      const { path } = this.$route
+      const url = `http://www.facebook.com/sharer/sharer.php?u=${location.href}`
+      window.open(url, 'share', 'menubar=1, resizable=1, width=800, height=500')
+    },
+    shareTwitter() {
+      const { BASE_URL } = process.env
+      const { path } = this.$route
+      const url = `https://twitter.com/intent/tweet?text=TEXT&url=${location.href}`
+      window.open(url, 'share', 'menubar=1, resizable=1, width=800, height=500')
     }
   },
   computed: {
     ...mapGetters({
-      isLoggedIn: 'auth/IS_LOGGED_IN'
+      isLoggedIn: 'auth/IS_LOGGED_IN',
+      post: 'post/GET_POST'
     })
   },
   data: _ => ({

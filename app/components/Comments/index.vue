@@ -14,7 +14,7 @@
       </el-badge>
       <div class="comment__info">
         <div class="info__name">{{ comment.displayName }}</div>
-        <div class="info__timestamp">{{ $moment(comment.createdAt).fromNow() }}</div>
+        <div class="info__timestamp">{{ $moment(comment.createdAt).format('YYYY-MM-DD hh:mm:ss') }}</div>
         <p class="info__content">{{ comment.content }}</p>
         <div class="info__actions">
           <span class="action">추천</span>

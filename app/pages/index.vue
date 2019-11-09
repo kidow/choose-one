@@ -17,10 +17,7 @@ export default {
   methods: {
     async get() {
       try {
-        const snapshot = await this.$firebase
-          .firestore()
-          .collection('posts')
-          .get()
+        const snapshot = await this.$firestore.collection('posts').get()
         snapshot.forEach(doc => console.log('doc: ', doc))
         // console.log('snapshot: ', snapshot)
       } catch (err) {

@@ -40,21 +40,17 @@ export default {
     async addPost() {
       this.loading = true
       try {
-        const { id } = await this.$firebase
-          .firestore()
-          .collection('posts')
-          .add({
-            optionOne: this.optionOne,
-            optionTwo: this.optionTwo,
-            title: this.title,
-            tags: this.tags,
-            uid: this.user.uid,
-            createdAt: new Date(),
-            voteOne: 0,
-            voteTwo: 0,
-            comments: [],
-            votedUids: []
-          })
+        const { id } = await this.$firestore.collection('posts').add({
+          optionOne: this.optionOne,
+          optionTwo: this.optionTwo,
+          title: this.title,
+          tags: this.tags,
+          uid: this.user.uid,
+          createdAt: new Date(),
+          voteOne: 0,
+          voteTwo: 0,
+          likes: 0
+        })
         this.$store.commit('post/SAVE_VISIBLE', false)
         this.messageSuccess('성공적으로 만들었습니다.')
         this.$router.push(`/post/${id}`)

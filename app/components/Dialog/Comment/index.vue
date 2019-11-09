@@ -44,14 +44,11 @@ export default {
         parentId: null
       }
       try {
-        const { id } = await this.$firebase
-          .firestore()
-          .collection('comments')
-          .add(data)
-        data.id = id
-        delete data.postId
+        const { id } = await this.$firestore.collection('comments').add(data)
+        // data.id = id
+        // delete data.postId
         this.$store.commit('comment/SAVE_VISIBLE', false)
-        this.$store.commit('comment/SAVE_COMMENTS', data)
+        // this.$store.commit('comment/SAVE_COMMENTS', data)
         this.messageSuccess('성공적으로 작성되었습니다.')
       } catch (err) {
         console.log(err)

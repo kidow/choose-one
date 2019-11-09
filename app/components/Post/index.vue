@@ -2,10 +2,12 @@
   <el-row>
     <el-col class="choose__container">
       <vue-card
-        :text="optionOne"
+        :text="post.optionOne"
         position="left"
-        @cardClick="cardClick(1, voteOne)"
+        @cardClick="cardClick(1)"
         :completed="completed"
+        :totalVote="post.voteOne"
+        :percent="leftPercent"
       />
       <span class="or">
         <i class="el-icon-loading" v-if="loading && !completed"></i>
@@ -14,20 +16,22 @@
         <i class="el-icon-right" v-else-if="index === 2"></i>
       </span>
       <vue-card
-        :text="optionTwo"
+        :text="post.optionTwo"
         position="right"
-        @cardClick="cardClick(2, voteTwo)"
+        @cardClick="cardClick(2)"
         :completed="completed"
+        :totalVote="post.voteTwo"
+        :percent="rightPercent"
       />
     </el-col>
     <el-col :lg="3" :sm="2" :xs="0" style="min-height: 1px" />
     <el-col :lg="18" :sm="20" :xs="24">
       <div class="banner__container">
-        <span class="left">{{ title }}</span>
+        <span class="left">{{ post.title }}</span>
         <span class="right">
           <i class="el-icon-star-on" @click="addStar"></i>
           <i class="el-icon-caret-left" @click="$router.back()"></i>
-          <i class="el-icon-caret-right" @click="$router.push(`/post/${nextId}`)"></i>
+          <i class="el-icon-caret-right" @click="$router.push(`/post/${post.nextId}`)"></i>
         </span>
       </div>
       <vue-meta />
@@ -48,38 +52,21 @@ import VueComments from '~/components/Comments'
 import { mapGetters } from 'vuex'
 export default {
   name: 'VuePost',
-  props: {
-    title: {
-      type: String,
-      default: ''
-    },
-    optionOne: {
-      type: String,
-      default: ''
-    },
-    optionTwo: {
-      type: String,
-      default: ''
-    },
-    nextId: {
-      type: Number,
-      default: 0
-    },
-    voteOne: {
-      type: Number,
-      default: 0
-    },
-    voteTwo: {
-      type: Number,
-      default: 0
-    }
-  },
   computed: {
     ...mapGetters({
       isLoggedIn: 'auth/IS_LOGGED_IN',
       postId: 'post/GET_POST_ID',
-      comments: 'comment/GET_COMMENTS'
-    })
+      comments: 'comment/GET_COMMENTS',
+      post: 'post/GET_POST',
+      user: 'auth/GET_USER'
+    }),
+    leftPercent() {
+      const { voteOne, voteTwo } = this.post
+      return Math.floor((voteOne / (voteOne + voteTwo)) * 100)
+    },
+    rightPercent() {
+      return 100 - this.leftPercent
+    }
   },
   components: {
     VueCard,
@@ -92,26 +79,63 @@ export default {
     index: 0
   }),
   methods: {
-    async cardClick(position, voteCount) {
+    async cardClick(position) {
       let options = {}
-      if (position === 1) options.voteOne = voteCount + 1
-      else if (position === 2) options.voteTwo = voteCount + 1
+      if (position === 1) options.voteOne = this.post.voteOne + 1
+      else if (position === 2) options.voteTwo = this.post.voteTwo + 1
       if (this.completed) return
+      this.loading = true
       try {
-        await this.$firebase
-          .firestore()
+        await this.$firestore
           .collection('posts')
           .doc(this.postId)
           .update(options)
         this.completed = true
-        this.$emit('voteCount', position)
       } catch (err) {
         console.log(err)
         this.notifyError()
+      } finally {
+        this.loading = false
       }
     },
     async addStar() {
-      console.log('addStar')
+      if (!this.isLoggedIn) return this.$store.commit('auth/SAVE_VISIBLE', true)
+      try {
+        const likeSnapshot = await this.$firestore
+          .collection('likes')
+          .where('postId', '==', this.postId)
+          .where('userId', '==', this.user.uid)
+          .get()
+
+        if (likeSnapshot.empty) {
+          await Promise.all([
+            this.$firestore.collection('likes').add({
+              postId: this.postId,
+              userId: this.user.uid
+            }),
+            this.$firestore
+              .collection('posts')
+              .doc(this.postId)
+              .update({ likes: this.post.likes + 1 })
+          ])
+          this.messageSuccess('추천하였습니다.')
+        } else {
+          const { id } = likeSnapshot.docs[0]
+          await Promise.all([
+            this.$firestore
+              .collection('likes')
+              .doc(id)
+              .delete(),
+            this.$firestore
+              .collection('posts')
+              .doc(this.postId)
+              .update({ likes: this.post.likes - 1 })
+          ])
+          this.messageSuccess('추천을 취소하였습니다.')
+        }
+      } catch (err) {
+        console.log(err)
+      }
     },
     createComment() {
       if (!this.isLoggedIn) this.$store.commit('auth/SAVE_VISIBLE', true)

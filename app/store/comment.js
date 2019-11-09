@@ -1,7 +1,6 @@
 export const state = () => ({
   comments: [],
-  visible: false,
-  postId: ''
+  visible: false
 })
 
 export const getters = {
@@ -18,4 +17,21 @@ export const mutations = {
   }
 }
 
-export const actions = {}
+export const actions = {
+  ON_SNAPSHOT({ commit, rootState }) {
+    const { postId } = rootState.post
+    this.$firestore
+      .collection('comments')
+      .where('postId', '==', postId)
+      .onSnapshot(querySnapshot => {
+        let comments = []
+        querySnapshot.forEach(doc => {
+          const r = doc.data()
+          const item = { ...r }
+          item.createdAt = r.createdAt.toDate()
+          comments.push(item)
+        })
+        commit('SAVE_COMMENTS', comments)
+      })
+  }
+}

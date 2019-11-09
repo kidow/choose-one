@@ -1,13 +1,5 @@
 <template>
-  <vue-post
-    :title="title"
-    :optionOne="optionOne"
-    :optionTwo="optionTwo"
-    :nextId="nextId"
-    :voteOne="voteOne"
-    :voteTwo="voteTwo"
-    @voteCount="voteCount"
-  />
+  <vue-post />
 </template>
 
 <script>
@@ -19,31 +11,18 @@ export default {
   },
   head() {
     return {
-      title: `${this.title} | 츄즈원`
+      title: `${this.post.title} | 츄즈원`
     }
   },
-  data: _ => ({
-    meta: {},
-    title: '하나냐 여러개냐',
-    completed: false,
-    loading: false,
-    index: 0,
-    nextId: 0,
-    optionOne: '',
-    optionTwo: '',
-    voteOne: 0,
-    voteTwo: 0
-  }),
   async asyncData({ app, params, store }) {
     try {
-      const postRef = await app.$firebase
-        .firestore()
+      const postRef = await app.$firestore
         .collection('posts')
         .doc(params.id)
         .get()
       const post = postRef.data()
-      const commentsRef = await app.$firebase
-        .firestore()
+      store.commit('post/SAVE_POST', post)
+      const commentsRef = await app.$firestore
         .collection('comments')
         .where('postId', '==', params.id)
         .get()
@@ -51,28 +30,25 @@ export default {
       let comments = []
       commentsRef.forEach(doc => {
         const r = doc.data()
-        const item = Object.assign(r)
+        const item = { ...r }
         item.createdAt = r.createdAt.toDate()
         comments.push(item)
       })
       store.commit('post/SAVE_POST_ID', params.id)
       store.commit('comment/SAVE_COMMENTS', comments)
-      return {
-        title: post.title,
-        optionOne: post.optionOne,
-        optionTwo: post.optionTwo,
-        voteOne: post.voteOne,
-        voteTwo: post.voteTwo
-      }
+      return {}
     } catch (err) {
       console.log(err)
     }
   },
-  methods: {
-    voteCount(position) {
-      if (position === 1) voteOne += 1
-      else if (position === 2) voteTwo += 1
-    }
+  mounted() {
+    this.$store.dispatch('post/ON_SNAPSHOT')
+    // this.$store.dispatch('comment/ON_SNAPSHOT')
+  },
+  computed: {
+    ...mapGetters({
+      post: 'post/GET_POST'
+    })
   }
 }
 </script>
