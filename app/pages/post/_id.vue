@@ -20,7 +20,7 @@ export default {
         .collection('posts')
         .doc(params.id)
         .get()
-      const post = postRef.data()
+      const post = Object.assign(postRef.data(), { id: postRef.id })
       store.commit('post/SAVE_POST', post)
       const commentsRef = await app.$firestore
         .collection('comments')
@@ -30,11 +30,11 @@ export default {
       let comments = []
       commentsRef.forEach(doc => {
         const r = doc.data()
-        const item = { ...r }
+        const item = { ...r, id: doc.id }
         item.createdAt = r.createdAt.toDate()
         comments.push(item)
       })
-      store.commit('post/SAVE_POST_ID', params.id)
+      // store.commit('post/SAVE_POST_ID', params.id)
       store.commit('comment/SAVE_COMMENTS', comments)
       return {}
     } catch (err) {
@@ -42,7 +42,7 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch('post/ON_SNAPSHOT')
+    this.$store.dispatch('post/ON_SNAPSHOT', this.$route.params.id)
     // this.$store.dispatch('comment/ON_SNAPSHOT')
   },
   computed: {

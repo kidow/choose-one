@@ -3,10 +3,10 @@
     <vue-header />
     <div style="height: 80px" />
     <nuxt />
-    <vue-dialog-auth />
-    <vue-dialog-post />
-    <vue-dialog-comment />
-    <vue-dialog-report />
+    <vue-dialog-auth v-if="auth" />
+    <vue-dialog-post v-if="post" />
+    <vue-dialog-comment v-if="comment" />
+    <vue-dialog-report v-if="report" />
     <el-backtop />
   </div>
 </template>
@@ -17,6 +17,7 @@ import VueDialogAuth from '~/components/Dialog/Auth'
 import VueDialogPost from '~/components/Dialog/Post'
 import VueDialogComment from '~/components/Dialog/Comment'
 import VueDialogReport from '~/components/Dialog/Report'
+import { mapGetters } from 'vuex'
 export default {
   components: {
     VueHeader,
@@ -24,6 +25,14 @@ export default {
     VueDialogPost,
     VueDialogComment,
     VueDialogReport
+  },
+  computed: {
+    ...mapGetters({
+      auth: 'auth/GET_VISIBLE',
+      post: 'post/GET_VISIBLE',
+      comment: 'comment/GET_VISIBLE',
+      report: 'report/GET_VISIBLE'
+    })
   }
 }
 </script>

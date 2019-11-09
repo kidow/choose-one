@@ -2,8 +2,8 @@
   <div class="comments__container">
     <div
       class="comment__container"
-      v-for="comment in comments"
-      :key="comment.id"
+      v-for="(comment, i) in comments"
+      :key="i"
       :class="{ child: !!comment.parentId }"
     >
       <el-badge :value="comment.likes">
@@ -17,9 +17,15 @@
         <div class="info__timestamp">{{ $moment(comment.createdAt).format('YYYY-MM-DD hh:mm:ss') }}</div>
         <p class="info__content">{{ comment.content }}</p>
         <div class="info__actions">
-          <span class="action">추천</span>
+          <span class="action" @click="addCommentStar(comment)">추천</span>
           <el-divider direction="vertical" />
-          <span class="action">답글</span>
+          <span class="action" @click="openReply">답글</span>
+          <template v-if="comment.userId === user.uid">
+            <el-divider direction="vertical" />
+            <span class="action" @click="openEdit(comment.id)">수정</span>
+            <el-divider direction="vertical" />
+            <span class="action" @click="onDelete(comment.id)">삭제</span>
+          </template>
         </div>
       </div>
     </div>
@@ -32,11 +38,77 @@ export default {
   name: 'VueComments',
   computed: {
     ...mapGetters({
-      comments: 'comment/GET_COMMENTS'
+      comments: 'comment/GET_COMMENTS',
+      user: 'auth/GET_USER',
+      isLoggedIn: 'auth/IS_LOGGED_IN'
     })
   },
-  mounted() {
-    console.log('!!')
+  methods: {
+    async addCommentStar(comment) {
+      if (!this.isLoggedIn) return this.$store.commit('auth/SAVE_VISIBLE', true)
+      try {
+        const likeSnapshot = await this.$firestore
+          .collection('likes')
+          .where('commentId', '==', comment.id)
+          .where('userId', '==', this.user.uid)
+          .get()
+
+        if (likeSnapshot.empty) {
+          await Promise.all([
+            this.$firestore.collection('likes').add({
+              commentId: comment.id,
+              userId: this.user.uid
+            }),
+            this.$firestore
+              .collection('comments')
+              .doc(comment.id)
+              .update({ likes: comment.likes + 1 })
+          ])
+          // onSnapshot
+          this.messageSuccess('추천하였습니다.')
+        } else {
+          const { id } = likeSnapshot.docs[0]
+          await Promise.all([
+            this.$firestore
+              .collection('likes')
+              .doc(id)
+              .delete(),
+            this.$firestore
+              .collection('comments')
+              .doc(comment.id)
+              .update({ likes: comment.likes - 1 })
+          ])
+          // onSnapshot
+          this.messageSuccess('추천을 취소하였습니다.')
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    openReply(commentId) {
+      if (!this.isLoggedIn) return this.$store.commit('auth/SAVE_VISIBLE', true)
+      this.$store.commit('comment/SAVE_VISIBLE', true)
+      this.$store.commit('comment/SAVE_COMMENT_ID', commentId)
+      this.$store.commit('comment/SAVE_MODE', 3)
+    },
+    openEdit(commentId) {
+      this.$store.commit('comment/SAVE_VISIBLE', true)
+      this.$store.commit('comment/SAVE_COMMENT_ID', commentId)
+      this.$store.commit('comment/SAVE_MODE', 2)
+    },
+    async onDelete(commentId) {
+      try {
+        await this.$firestore
+          .collection('comments')
+          .doc(commentId)
+          .delete()
+        // onSnapshot
+        this.messageSuccess('삭제되었습니다.')
+      } catch (err) {
+        console.log(err)
+        this.notifyError()
+      }
+    }
   }
 }
 </script>

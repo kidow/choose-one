@@ -1,11 +1,14 @@
 export const state = () => ({
   comments: [],
-  visible: false
+  visible: false,
+  mode: 1, // 1은 추가, 2는 수정, 3은 댓글
+  commentId: ''
 })
 
 export const getters = {
   GET_COMMENTS: state => state.comments,
-  GET_VISIBLE: state => state.visible
+  GET_VISIBLE: state => state.visible,
+  GET_MODE: state => state.mode
 }
 
 export const mutations = {
@@ -14,12 +17,17 @@ export const mutations = {
   },
   SAVE_VISIBLE(state, visible) {
     state.visible = visible
+  },
+  SAVE_MODE(state, mode) {
+    state.mode = mode
+  },
+  SAVE_COMMENT_ID(state, commentId) {
+    state.commentId = commentId
   }
 }
 
 export const actions = {
-  ON_SNAPSHOT({ commit, rootState }) {
-    const { postId } = rootState.post
+  ON_SNAPSHOT({ commit }, postId) {
     this.$firestore
       .collection('comments')
       .where('postId', '==', postId)

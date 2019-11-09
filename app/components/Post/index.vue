@@ -55,7 +55,6 @@ export default {
   computed: {
     ...mapGetters({
       isLoggedIn: 'auth/IS_LOGGED_IN',
-      postId: 'post/GET_POST_ID',
       comments: 'comment/GET_COMMENTS',
       post: 'post/GET_POST',
       user: 'auth/GET_USER'
@@ -88,7 +87,7 @@ export default {
       try {
         await this.$firestore
           .collection('posts')
-          .doc(this.postId)
+          .doc(this.post.id)
           .update(options)
         this.completed = true
       } catch (err) {
@@ -103,19 +102,19 @@ export default {
       try {
         const likeSnapshot = await this.$firestore
           .collection('likes')
-          .where('postId', '==', this.postId)
+          .where('postId', '==', this.post.id)
           .where('userId', '==', this.user.uid)
           .get()
 
         if (likeSnapshot.empty) {
           await Promise.all([
             this.$firestore.collection('likes').add({
-              postId: this.postId,
+              postId: this.post.id,
               userId: this.user.uid
             }),
             this.$firestore
               .collection('posts')
-              .doc(this.postId)
+              .doc(this.post.id)
               .update({ likes: this.post.likes + 1 })
           ])
           this.messageSuccess('추천하였습니다.')
@@ -128,7 +127,7 @@ export default {
               .delete(),
             this.$firestore
               .collection('posts')
-              .doc(this.postId)
+              .doc(this.post.id)
               .update({ likes: this.post.likes - 1 })
           ])
           this.messageSuccess('추천을 취소하였습니다.')

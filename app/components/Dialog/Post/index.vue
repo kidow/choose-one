@@ -10,7 +10,8 @@
       <el-input placeholder="첫 번째 선택" v-model="optionOne" />
       <el-input placeholder="두 번째 선택" v-model="optionTwo" />
       <el-input placeholder="제목" v-model="title" />
-      <el-input placeholder="카테고리" v-model="tags" />
+      <el-input placeholder="해시태그" v-model="tags" />
+      <el-alert title="모든 주제는 검수되며, 불건전하거나 자극적인 주제는 자제 부탁드립니다." type="warning" effect="dark" show-icon :closable="false" />
     </div>
   </vue-dialog>
 </template>

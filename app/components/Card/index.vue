@@ -10,7 +10,7 @@
         <span>%</span>
       </div>
       <div class="total-votes" v-if="completed">
-        {{ totalVote }}
+        {{ totalVote }} 투표
         <!-- <vue-count-to :duration="2500" :endVal="totalVote"></vue-count-to> -->
       </div>
 
@@ -84,6 +84,7 @@ export default {
     .total-votes {
       font-size: 20px;
       margin: 3px 0 15px;
+      font-weight: bold;
     }
   }
 }
