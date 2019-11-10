@@ -1,7 +1,7 @@
 <template>
   <vue-dialog
-    title="댓글 등록"
-    submitText="등록"
+    :title="title"
+    :submitText="submitText"
     :visible="visible"
     @close="$store.commit('comment/SAVE_VISIBLE', false)"
     @ok="selectMethod"
@@ -26,7 +26,17 @@ export default {
       user: 'auth/GET_USER',
       commentId: 'comment/GET_COMMENT_ID',
       mode: 'comment/GET_MODE'
-    })
+    }),
+    title() {
+      if (this.mode === 1) return '댓글 등록'
+      else if (this.mode === 2) return '댓글 수정'
+      else if (this.mode === 3) return '답글 등록'
+      else return '댓글 등록'
+    },
+    submitText() {
+      if (this.mode === 2) return '수정'
+      else return '등록'
+    }
   },
   components: {
     VueDialog
@@ -58,8 +68,8 @@ export default {
       }
     },
     selectMethod() {
-      if (this.commentId) this.updateComment()
-      else if (this.parentId) this.addReply()
+      if (this.mode === 2) this.updateComment()
+      else if (this.mode === 3) this.addReply()
       else this.createComment()
     },
     async updateComment() {

@@ -8,7 +8,8 @@ export const state = () => ({
 export const getters = {
   GET_COMMENTS: state => state.comments,
   GET_VISIBLE: state => state.visible,
-  GET_MODE: state => state.mode
+  GET_MODE: state => state.mode,
+  GET_COMMENT_ID: state => state.commentId
 }
 
 export const mutations = {
@@ -28,19 +29,26 @@ export const mutations = {
 
 export const actions = {
   ON_SNAPSHOT({ commit }, postId) {
-    this.$firestore
-      .collection('comments')
-      .where('postId', '==', postId)
-      .orderBy('createdAt', 'asc')
-      .onSnapshot(querySnapshot => {
-        let comments = []
-        querySnapshot.forEach(doc => {
-          const r = doc.data()
-          const item = { ...r, id: doc.id }
-          item.createdAt = r.createdAt.toDate()
-          comments.push(item)
-        })
-        commit('SAVE_COMMENTS', comments)
-      })
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.$firestore
+          .collection('comments')
+          .where('postId', '==', postId)
+          // .orderBy('createdAt', 'asc') // 오더바이 꼭되야함
+          .onSnapshot(querySnapshot => {
+            let comments = []
+            querySnapshot.forEach(doc => {
+              const r = doc.data()
+              const item = { ...r, id: doc.id }
+              item.createdAt = r.createdAt.toDate()
+              comments.push(item)
+            })
+            commit('SAVE_COMMENTS', comments)
+            resolve(true)
+          })
+      } catch (err) {
+        reject(err)
+      }
+    })
   }
 }

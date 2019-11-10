@@ -83,7 +83,7 @@ export default {
           this.messageSuccess('추천을 취소하였습니다.')
         }
         // onSnapshot
-        this.$store.dispatch('comment/ON_SNAPSHOT', this.post.id)
+        await this.$store.dispatch('comment/ON_SNAPSHOT', this.post.id)
       } catch (err) {
         console.log(err)
       }
@@ -107,7 +107,7 @@ export default {
           .delete()
 
         // onSnapshot
-        this.$store.dispatch('comment/ON_SNAPSHOT', this.post.id)
+        await this.$store.dispatch('comment/ON_SNAPSHOT', this.post.id)
         this.messageSuccess('삭제되었습니다.')
       } catch (err) {
         console.log(err)

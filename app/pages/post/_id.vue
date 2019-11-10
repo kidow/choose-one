@@ -25,10 +25,7 @@ export default {
       const commentsRef = await app.$firestore
         .collection('comments')
         .where('postId', '==', params.id)
-        .orderBy('createdAt', 'asc')
         .get()
-
-      console.log('comment', commentsRef)
 
       let comments = []
       commentsRef.forEach(doc => {

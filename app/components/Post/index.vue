@@ -137,8 +137,9 @@ export default {
       }
     },
     createComment() {
-      if (!this.isLoggedIn) this.$store.commit('auth/SAVE_VISIBLE', true)
-      else this.$store.commit('comment/SAVE_VISIBLE', true)
+      if (!this.isLoggedIn) return this.$store.commit('auth/SAVE_VISIBLE', true)
+      this.$store.commit('comment/SAVE_VISIBLE', true)
+      this.$store.commit('comment/SAVE_MODE', 1)
     }
   }
 }
