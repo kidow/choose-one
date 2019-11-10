@@ -97,7 +97,10 @@ export default {
       }
       try {
         await this.$firestore.collection('comments').add(data)
-        // onSnapshot으로 업데이트
+
+        // onSnapshot
+        this.$store.dispatch('comment/ON_SNAPSHOT', this.post.id)
+
         this.messageSuccess('성공적으로 작성되었습니다.')
       } catch (err) {
         this.notifyError()

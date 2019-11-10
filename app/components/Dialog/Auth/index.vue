@@ -32,7 +32,6 @@
     </template>
     <template v-else-if="path === '회원가입'">
       <form @submit.prevent="onSignup" v-loading="loading">
-        <el-input v-model="displayName" placeholder="닉네임 (최대 9자)" />
         <el-input v-model="email" placeholder="이메일" type="email" />
         <el-input v-model="password" placeholder="패스워드 (8 ~ 16자)" type="password" />
         <div style="text-align:right; cursor:pointer" @click="path = '로그인'">로그인</div>
@@ -65,8 +64,7 @@ export default {
     loading: false,
     email: '',
     password: '',
-    path: '로그인',
-    displayName: ''
+    path: '로그인'
   }),
   computed: {
     ...mapGetters({
@@ -102,21 +100,16 @@ export default {
     async onSignup() {
       if (!this.email) return this.notifyWarning('이메일을 입력하세요.')
       if (!this.password) return this.notifyWarning('비밀번호를 입력해 주세요.')
-      if (!this.displayName)
-        return this.notifyWarning('닉네임을 입력해 주세요.')
       if (!isEmail(this.email))
         return this.notifyWarning('올바른 이메일을 입력해주세요.')
       if (!isLength(this.password, { min: 8, max: 16 }))
         return this.notifyWarning('비밀번호는 8 ~ 16자 사이로 입력해 주세요.')
-      if (!isLength(this.displayName, { max: 9 }))
-        return this.notifyWarning('닉네임은 최대 9자로 지어주세요.')
 
       this.loading = true
       try {
         await this.$store.dispatch('auth/SIGN_UP', {
           email: this.email,
-          password: this.password,
-          displayName: this.displayName
+          password: this.password
         })
         this.messageSuccess('성공적으로 회원가입되었습니다.')
       } catch (err) {

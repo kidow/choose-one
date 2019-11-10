@@ -20,12 +20,15 @@ export default {
         .collection('posts')
         .doc(params.id)
         .get()
-      const post = Object.assign(postRef.data(), { id: postRef.id })
+      const post = { ...postRef.data(), id: postRef.id }
       store.commit('post/SAVE_POST', post)
       const commentsRef = await app.$firestore
         .collection('comments')
         .where('postId', '==', params.id)
+        .orderBy('createdAt', 'asc')
         .get()
+
+      console.log('comment', commentsRef)
 
       let comments = []
       commentsRef.forEach(doc => {
@@ -34,7 +37,6 @@ export default {
         item.createdAt = r.createdAt.toDate()
         comments.push(item)
       })
-      // store.commit('post/SAVE_POST_ID', params.id)
       store.commit('comment/SAVE_COMMENTS', comments)
       return {}
     } catch (err) {

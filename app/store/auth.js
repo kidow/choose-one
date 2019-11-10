@@ -51,11 +51,14 @@ export const actions = {
       })
     })
   },
-  SIGN_UP({ dispatch, commit }, { email, password, displayName }) {
+  SIGN_UP({ dispatch, commit }, { email, password }) {
     return new Promise(async (resolve, reject) => {
       try {
         await this.$auth().createUserWithEmailAndPassword(email, password)
         const user = this.$auth().currentUser
+        const displayName = Date.now().toString(
+          Math.floor(Math.random() * 3) + 34
+        )
         await user.updateProfile({ displayName })
         await dispatch('LOG_IN', { email, password })
         await dispatch('ME')

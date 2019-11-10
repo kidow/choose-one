@@ -13,7 +13,7 @@ export const getters = {
 
 export const mutations = {
   SAVE_COMMENTS(state, comments) {
-    state.comments = [...state.comments, ...comments]
+    state.comments = comments
   },
   SAVE_VISIBLE(state, visible) {
     state.visible = visible
@@ -31,11 +31,12 @@ export const actions = {
     this.$firestore
       .collection('comments')
       .where('postId', '==', postId)
+      .orderBy('createdAt', 'asc')
       .onSnapshot(querySnapshot => {
         let comments = []
         querySnapshot.forEach(doc => {
           const r = doc.data()
-          const item = { ...r }
+          const item = { ...r, id: doc.id }
           item.createdAt = r.createdAt.toDate()
           comments.push(item)
         })

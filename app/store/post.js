@@ -1,6 +1,5 @@
 export const state = () => ({
   visible: false,
-  postId: '',
   post: {
     optionOne: '',
     optionTwo: '',
@@ -31,11 +30,13 @@ export const mutations = {
 }
 
 export const actions = {
-  ON_SNAPSHOT({ commit, state }, func) {
-    // if (!func) return
+  ON_SNAPSHOT({ commit, state }) {
     this.$firestore
       .collection('posts')
       .doc(state.post.id)
-      .onSnapshot(doc => commit('SAVE_POST', doc.data()))
+      .onSnapshot(doc => {
+        const post = Object.assign(doc.data(), { id: doc.id })
+        commit('SAVE_POST', post)
+      })
   }
 }

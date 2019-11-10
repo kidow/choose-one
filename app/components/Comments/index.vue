@@ -40,7 +40,8 @@ export default {
     ...mapGetters({
       comments: 'comment/GET_COMMENTS',
       user: 'auth/GET_USER',
-      isLoggedIn: 'auth/IS_LOGGED_IN'
+      isLoggedIn: 'auth/IS_LOGGED_IN',
+      post: 'post/GET_POST'
     })
   },
   methods: {
@@ -64,7 +65,7 @@ export default {
               .doc(comment.id)
               .update({ likes: comment.likes + 1 })
           ])
-          // onSnapshot
+
           this.messageSuccess('추천하였습니다.')
         } else {
           const { id } = likeSnapshot.docs[0]
@@ -78,9 +79,11 @@ export default {
               .doc(comment.id)
               .update({ likes: comment.likes - 1 })
           ])
-          // onSnapshot
+
           this.messageSuccess('추천을 취소하였습니다.')
         }
+        // onSnapshot
+        this.$store.dispatch('comment/ON_SNAPSHOT', this.post.id)
       } catch (err) {
         console.log(err)
       }
@@ -102,7 +105,9 @@ export default {
           .collection('comments')
           .doc(commentId)
           .delete()
+
         // onSnapshot
+        this.$store.dispatch('comment/ON_SNAPSHOT', this.post.id)
         this.messageSuccess('삭제되었습니다.')
       } catch (err) {
         console.log(err)
