@@ -84,6 +84,7 @@ export default {
             content: this.content
           })
         this.messageSuccess('성공적으로 수정되었습니다.')
+        this.$store.commit('comment/SAVE_VISIBLE', false)
         this.content = ''
       } catch (err) {
         console.log(err)
@@ -109,8 +110,8 @@ export default {
         await this.$firestore.collection('comments').add(data)
 
         // onSnapshot
-        this.$store.dispatch('comment/ON_SNAPSHOT', this.post.id)
-
+        await this.$store.dispatch('comment/ON_SNAPSHOT', this.post.id)
+        this.$store.commit('comment/SAVE_VISIBLE', false)
         this.messageSuccess('성공적으로 작성되었습니다.')
       } catch (err) {
         this.notifyError()
