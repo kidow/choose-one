@@ -12,12 +12,16 @@ export const state = () => ({
     likes: 0,
     nextId: 0,
     id: ''
-  }
+  },
+  completed: false,
+  position: 0
 })
 
 export const getters = {
   GET_VISIBLE: state => state.visible,
-  GET_POST: state => state.post
+  GET_POST: state => state.post,
+  GET_COMPLETED: state => state.completed,
+  GET_POSITION: state => state.position
 }
 
 export const mutations = {
@@ -26,6 +30,12 @@ export const mutations = {
   },
   SAVE_POST(state, post) {
     state.post = post
+  },
+  SAVE_COMPLETED(state, completed) {
+    state.completed = completed
+  },
+  SAVE_POSITION(state, position) {
+    state.position = position
   }
 }
 

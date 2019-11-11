@@ -12,8 +12,8 @@
       <span class="or">
         <i class="el-icon-loading" v-if="loading && !completed"></i>
         <template v-else-if="!loading && !completed">또는</template>
-        <i class="el-icon-back" v-else-if="index === 1"></i>
-        <i class="el-icon-right" v-else-if="index === 2"></i>
+        <i class="el-icon-back" v-else-if="position === 1"></i>
+        <i class="el-icon-right" v-else-if="position === 2"></i>
       </span>
       <vue-card
         :text="post.optionTwo"
@@ -57,7 +57,9 @@ export default {
       isLoggedIn: 'auth/IS_LOGGED_IN',
       comments: 'comment/GET_COMMENTS',
       post: 'post/GET_POST',
-      user: 'auth/GET_USER'
+      user: 'auth/GET_USER',
+      completed: 'post/GET_COMPLETED',
+      position: 'post/GET_POSITION'
     }),
     leftPercent() {
       const { voteOne, voteTwo } = this.post
@@ -73,9 +75,7 @@ export default {
     VueComments
   },
   data: _ => ({
-    loading: false,
-    completed: false,
-    index: 0
+    loading: false
   }),
   methods: {
     async cardClick(position) {
@@ -85,11 +85,21 @@ export default {
       if (this.completed) return
       this.loading = true
       try {
-        await this.$firestore
-          .collection('posts')
-          .doc(this.post.id)
-          .update(options)
-        this.completed = true
+        await Promise.all([
+          this.$firestore
+            .collection('posts')
+            .doc(this.post.id)
+            .update(options),
+          this.$firestore.collection('votes').add({
+            postId: this.post.id,
+            userId: this.user.uid,
+            position,
+            createdAt: new Date()
+          })
+        ])
+
+        this.$store.commit('post/SAVE_COMPLETED', true)
+        this.$store.commit('post/SAVE_POSITION', position)
       } catch (err) {
         console.log(err)
         this.notifyError()

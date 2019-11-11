@@ -26,6 +26,19 @@ export default {
         .collection('comments')
         .where('postId', '==', params.id)
         .get()
+      let completed = false
+      const voteRef = await app.$firestore
+        .collection('votes')
+        .where('postId', '==', params.id)
+        .where('userId', '==', store.getters['auth/GET_USER'].uid)
+        .get()
+      if (!voteRef.empty) {
+        store.commit('post/SAVE_COMPLETED', true)
+        voteRef.forEach(doc => {
+          const r = doc.data()
+          store.commit('post/SAVE_POSITION', r.position)
+        })
+      }
 
       let comments = []
       commentsRef.forEach(doc => {
